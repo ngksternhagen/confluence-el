@@ -9,10 +9,11 @@ Software from Atlassian:
 It allows you to pull and edit the wiki-markup for a page and store it
 back into your confluence instance.
 
-This mode can be downloaded from:
+This mode was formerly available at:
 
   http://code.google.com/p/confluence-el/
 
+But the project was moved. Additional details were hard to find.
 
 
 INSTALLATION 
