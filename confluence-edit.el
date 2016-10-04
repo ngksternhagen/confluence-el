@@ -5,7 +5,7 @@
 ;; Author: James Ahlborn <james@boomi.com>
 ;; Keywords: confluence, wiki
 ;; Version: 1.7
-;; Package-Requires: 
+;; Package-Requires:
 ;; EmacsWiki: ConfluenceMode
 
 ;; This file is NOT part of GNU Emacs.
@@ -41,7 +41,7 @@
 ;; general, you can follow the instructions in confluence.el for configuring
 ;; this mode and setting up longlines mode, just substitute
 ;; "confluence-edit-mode" everywhere you see "confluence-mode".
-;; 
+;;
 
 ;;; Code:
 
@@ -62,7 +62,7 @@
   "Execute the forms in BODY with `url-show-status' set to nil."
   `(let ((url-show-status nil))
      ,@body))
-  
+
 (defun cfln-get-page-anchors ()
   "Gets the anchors in the current page."
   (let ((anchors nil))
@@ -76,14 +76,14 @@
         (push (cons (match-string 1) t) anchors)))
     anchors))
 
-(defun cfln-read-string (prompt-prefix prompt hist-alist-var hist-key 
+(defun cfln-read-string (prompt-prefix prompt hist-alist-var hist-key
                        comp-func-or-table &optional
                        require-match init-val def-val)
   "Prompt for a string using the given prompt info and history alist."
   ;; we actually use the history var as an alist of history vars so we can
   ;; have different histories in different contexts (e.g. separate space
   ;; histories for each url and separate page histories for each space)
-  (let ((hist-list (cfln-get-struct-value (symbol-value hist-alist-var) 
+  (let ((hist-list (cfln-get-struct-value (symbol-value hist-alist-var)
                                         hist-key))
         (result-string nil))
     (setq result-string
@@ -100,7 +100,7 @@
   (let ((cfln-read-current-completions nil)
         (cfln-read-current-other-completions nil)
         (cfln-read-last-comp-str nil)
-        (cfln-read-completion-buffer 
+        (cfln-read-completion-buffer
          (or (and (boundp 'cfln-read-completion-buffer)
                   cfln-read-completion-buffer)
              (current-buffer)))
@@ -124,7 +124,7 @@ If DEF-CHAR is given it will be returned if user hits the <enter> key."
               (setq the-char def-char)
             (setq the-char nil))))
     the-char))
-  
+
 (defun cfln-complete (comp-str pred comp-flag comp-table)
   "Executes completion for the given args and COMP-TABLE."
   (cond
@@ -211,13 +211,13 @@ given STRUCT-VAR."
 
 (defconst confluence-font-lock-keywords-1
   (list
-  
+
    '("{\\([^{}:\n]+:?\\)[^{}\n]*}"
      (1 'font-lock-constant-face))
-  
+
    '("{[^{}\n]+[:|]title=\\([^}|\n]+\\)[^{}\n]*}"
      (1 'bold append))
-  
+
    '("{warning\\(?:[:][^}\n]*\\)?}\\(\\(.\\|[\n]\\)*?\\){warning}"
      (1 'font-lock-warning-face prepend))
    '("{note\\(?:[:][^}\n]*\\)?}\\(\\(.\\|[\n]\\)*?\\){note}"
@@ -226,15 +226,15 @@ given STRUCT-VAR."
      (1 'font-lock-doc-face prepend))
    '("{tip\\(?:[:][^}\n]*\\)?}\\(\\(.\\|[\n]\\)*?\\){tip}"
      (1 'font-lock-comment-face prepend))
-  
+
    ;; bold
    '("[^[:word:]\\*#\n][*]\\([^*\n]+\\)[*]\\W"
      (1 'bold))
-   
+
    ;; code
    '("{{\\([^}\n]+\\)}}"
      (1 'confluence-code-face t))
-   
+
    ;; italics/emphasised
    '("[^[:word:]\\]_\\([^_\n]+\\)_\\W"
      (1 'italic prepend))
@@ -262,7 +262,7 @@ given STRUCT-VAR."
    ;; bullet points
    '("^\\([*#]+\\)\\s-"
      (1 'font-lock-constant-face))
-   
+
    ;; links
    '("\\(\\[\\)\\([^]|\n]*\\)[|]\\([^]\n]+\\)\\(\\]\\)"
      (1 'font-lock-constant-face)
@@ -285,20 +285,20 @@ given STRUCT-VAR."
      (1 'font-lock-constant-face)
      (2 confluence-embedded-link-face)
      (3 'font-lock-constant-face))
-   
+
    ;; tables
    '("[|]\\{2\\}\\([^|\n]+\\)"
      (1 'bold))
    '("\\([|]\\{1,2\\}\\)"
      (1 'font-lock-constant-face))
    )
-  
+
   "Basic level highlighting for confluence mode.")
 
 (defconst confluence-font-lock-keywords-2
   (append confluence-font-lock-keywords-1
           (list
-  
+
            ;; code/preformatted blocks
            '("{noformat\\(?:[:][^}\n]*\\)?}\\(\\(.\\|[\n]\\)*?\\){noformat}"
              (1 'confluence-code-face t))
@@ -374,7 +374,7 @@ bullets if DEPTH is negative (does nothing if DEPTH is 0)."
       (let ((tmp-point (point))
             (indent-str ""))
         (if (re-search-forward "\\=\\([*#]+\\)" (line-end-position) t)
-            (progn 
+            (progn
               (setq indent-str (match-string 1))
               (setq indent-str
                     (if (< (abs depth) (length indent-str))
@@ -439,7 +439,7 @@ ARE-BLOCK-TAGS is not nil, the wrap strings will be formatted using
           (setq end (point))))
       (if are-block-tags
           (setq pre-wrap-str (cfln-format-block-tag pre-wrap-str beg)
-                post-wrap-str (cfln-format-block-tag (or post-wrap-str 
+                post-wrap-str (cfln-format-block-tag (or post-wrap-str
                                                        pre-wrap-str) end)))
       (set-marker end-marker end)
       (goto-char beg)
@@ -523,7 +523,7 @@ as a {code}code block{code}."
   (interactive)
   (if (not anchor-name)
       (let ((cur-anchors (cfln-get-page-anchors)))
-        (setq anchor-name (cfln-read-string-simple "Confluence Anchor Name: " 
+        (setq anchor-name (cfln-read-string-simple "Confluence Anchor Name: "
                                                  nil cur-anchors))))
   (cfln-wrap-text "[" (concat "|#" (or anchor-name "") "]")))
 
@@ -531,11 +531,11 @@ as a {code}code block{code}."
   "Wraps the current region/word as an attachment [link|#FILE-NAME]."
   (interactive)
   (if (not file-name)
-      (let ((cur-attachments 
+      (let ((cur-attachments
              (if confluence-get-attachment-names-function
                  (funcall confluence-get-attachment-names-function)
                nil)))
-        (setq file-name (cfln-read-string-simple "Confluence attachment file name: " 
+        (setq file-name (cfln-read-string-simple "Confluence attachment file name: "
                                                  'confluence-attachment-history cur-attachments))))
   (cfln-wrap-text "[" (concat "|^" (or file-name "") "]")))
 
@@ -552,8 +552,8 @@ as a {code}code block{code}."
 (defun confluence-insert-horizontal-rule ()
   "Inserts horizontal rule."
   (interactive)
-  (insert (cfln-format-block-tag 
-           (concat (cfln-hard-newline) "----" (cfln-hard-newline)) 
+  (insert (cfln-format-block-tag
+           (concat (cfln-hard-newline) "----" (cfln-hard-newline))
            (point))))
 
 (defvar confluence-max-block-search 200
@@ -571,7 +571,7 @@ format block).  note, this is kind of a guessing game because there is
         (setq search-start-pos (- cur-pos confluence-max-block-search)))
     (if (re-search-backward "^{\\([^{}\n]+\\)}" search-start-pos t)
         (unless (cfln-beginning-of-block-p (match-string 1))
-          (let ((first-match-pos (point))) 
+          (let ((first-match-pos (point)))
             (goto-char cur-pos)
             (backward-paragraph)
             (setq cur-pos (point))
@@ -596,13 +596,13 @@ format block).  note, this is kind of a guessing game because there is
         (setq search-end-pos (+ cur-pos confluence-max-block-search)))
     (if (re-search-forward "^{\\([^{}\n]+\\)}" search-end-pos t)
         (unless (cfln-end-of-block-p (match-string 1))
-          (let ((first-match-pos (point))) 
+          (let ((first-match-pos (point)))
             (goto-char cur-pos)
             (forward-paragraph)
             (setq cur-pos (point))
             (if (and (> cur-pos first-match-pos)
                      (< cur-pos search-end-pos)
-                     (re-search-forward "^{\\([^{}\n]+\\)}" 
+                     (re-search-forward "^{\\([^{}\n]+\\)}"
                                         search-end-pos t))
                 (unless (cfln-end-of-block-p (match-string 1))
                   (goto-char cur-pos))))))
